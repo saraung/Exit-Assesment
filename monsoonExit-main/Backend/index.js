@@ -39,6 +39,30 @@ app.get("/get", async (req, res) => {
 });
 
 
+app.delete('/remove/:a',async(req,res)=>{   
+  var id=req.params.a
+  console.log(id)
+  try {
+      await BlogModel.findByIdAndDelete(id)
+      res.send({message:'deleted  succesfully'})
+  } catch (error) {
+      console.log(error)
+  }
+})
+
+
+app.put('/edit/:b',async(req,res)=>{
+  var id=req.params.b
+  console.log(id)
+  try {
+      var std=await BlogModel.findByIdAndUpdate(id,req.body)
+     res.send({message:'updated successfully'}) 
+  } catch (error) {
+      console.log(error)
+  }
+})
+
+
 app.listen(PORT, () => {
   console.log(`${PORT} is up and running`);
 });

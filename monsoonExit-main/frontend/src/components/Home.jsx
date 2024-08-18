@@ -6,6 +6,7 @@
 import { Button, Card, CardContent, Grid, Typography } from '@mui/material'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 
 
@@ -28,15 +29,27 @@ const Home = () => {
         });
     },[])
     
-    const handleDelete=()=>{
+    const handleDelete=(id)=>{
         console.log("btn clicked")
+        console.log(id)
+        axios.delete(`http://localhost:3001/remove/${id}`)
+        .then(response => {
+          console.log('Item deleted successfully:', response.data);
+          alert(response.data.message)
+          window.location.reload(true)
+        })
+        .catch(error => {
+          console.error('There was an error deleting the item!', error);
+        });
     }
     
-    const handleEdit=()=>{
+    var navigate=useNavigate()
+    const handleUpdate=(val)=>{
         console.log("btn clicked")
+        console.log("clicked",val)
+        navigate('/add',{state:{val}})
     }
     
-
 
 
 
@@ -52,8 +65,8 @@ const Home = () => {
             <img src={blog.img_url} alt={blog.title} style={{ width: '200px', height: '150px' }} />
             <Typography variant="body2">{blog.title}</Typography>
             <Typography variant="h4">{blog.content}</Typography><br />
-            <Button variant='contained' onClick={() => handleDelete(blogs._id)} color='error'>Delete</Button>&nbsp;&nbsp;
-            <Button variant='contained' onClick={() => handleEdit(blogs._id)} color='secondary'>Update</Button>
+            <Button variant='contained' onClick={() => handleDelete(blog._id)} color='error'>Delete</Button>&nbsp;&nbsp;
+            <Button variant='contained' onClick={() => handleUpdate(blog)} color='secondary'>Update</Button>
             </CardContent>
             </Card>
             </Grid>

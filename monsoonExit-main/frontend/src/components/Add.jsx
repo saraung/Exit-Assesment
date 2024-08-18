@@ -3,30 +3,71 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const Add = () => {
+const Add = (props) => {
   const navigate = useNavigate();
   var [inputs, setInputs] = useState({
     title: "",
     content: "",
     img_url: "",
   });
+
+  useEffect(()=>{
+    if(location.state!=null)
+    {
+      setInputs({...inputs,
+        title:location.state.val.title,
+        content:location.state.val.content,
+        img_url:location.state.val.img_url,
+      })
+    }
+  },[])
+
+
   const inputHandler = (e) => {
     console.log(e.target.value);
     setInputs({ ...inputs, [e.target.name]: e.target.value });
     console.log("in",inputs);
   };
-  const addData = () => {
-    console.log("clicked");
+
+
+  var location =useLocation()
+  console.log("location",location.state)
+
+
+
+
+  const addData=(e)=>{
+    console.log('button clicked')
+   if(location.state!=null)
+   {
+    axios.put('http://localhost:3001/edit/'+location.state.val._id,inputs)
+    .then((res)=>{
+      console.log(res)
+      alert(res.data.message)
+      
+    })
+    .catch((err)=>{
+      console.log(err)
+    })
+    console.log(inputs);
+
+   }
+   else{
     axios
-      .post("http://localhost:3001/add",inputs)
-      .then((res) => {
-        alert(res.data.message);
-        navigate("/");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    .post("http://localhost:3001/add",inputs)
+    .then((res) => {
+      alert(res.data.message);
+      navigate("/");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+   }
+   navigate("/")
   };
+
+
+
   return (
     <div>
       <div>
